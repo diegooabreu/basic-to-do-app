@@ -16,14 +16,52 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+
+    if (newTaskTitle.length != 0) {
+      // nova task que será adicionada
+      const tarefa: Task = {
+        id: Math.floor(Math.random() * (9999 - 1 + 1)) + 1,
+        title: newTaskTitle,
+        isComplete: false,
+      }
+      //SETANDO NOVO VALOR PARA ARRAY DE TASKS, ADICIONANDO A VARIAVEL tarefa
+      setTasks([...tasks, tarefa])
+    }
+    
+          
   }
 
-  function handleToggleTaskCompletion(id: number) {
+  function handleToggleTaskCompletion(idDaTask: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+
+    // procura no array o index do item que tenha o id enviado como parametro
+    const index = tasks.findIndex(x => x.id === idDaTask)
+        
+
+    // FAZ UMA COPIA DO ARRAY  PARA PODER USAR NO METODO setTasks APÓS ALTERARMOS O ITEM QUE QUEREMOS, MUDAMOS O ITEM COM O INDEX CERTO E USAMOS O METODO setTasks para mudar o estado
+    let newTasks = [...tasks];
+
+    if (tasks[index].isComplete){
+      newTasks[index] = {id: tasks[index].id, title: tasks[index].title, isComplete: false}
+      setTasks(newTasks);
+    } else {
+      newTasks[index] = {id: tasks[index].id, title: tasks[index].title, isComplete: true}
+      setTasks(newTasks);
+    }
+    
+
   }
 
-  function handleRemoveTask(id: number) {
+  function handleRemoveTask(idDaTask: number) {
     // Remova uma task da listagem pelo ID
+
+    // procura no array o index do item que tenha o id enviado como parametro
+    const index = tasks.findIndex(x => x.id === idDaTask)
+
+    let newTasks = [...tasks];
+    newTasks.splice(index, 1)
+    setTasks(newTasks);
+
   }
 
   return (
@@ -38,7 +76,7 @@ export function TaskList() {
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
-          <button type="submit" data-testid="add-task-button" onClick={handleCreateNewTask}>
+          <button type="submit" data-testid="add-task-button" onClick={() => handleCreateNewTask()}>
             <FiCheckSquare size={16} color="#fff"/>
           </button>
         </div>
